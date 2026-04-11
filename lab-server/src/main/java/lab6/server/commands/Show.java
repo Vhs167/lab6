@@ -1,0 +1,28 @@
+package lab6.server.commands;
+
+import lab6.common.dto.Response;
+import lab6.common.dto.Request;
+import lab6.common.utils.Validator;
+import lab6.server.managers.CollectionManager;
+
+
+/**
+ * Команда 'show' выводит все элементы коллекции
+ */
+
+
+public class Show extends AbstractCommand {
+
+    private final CollectionManager collectionManager;
+
+    public Show(CollectionManager collectionManager) {
+        super("show", "вывести в стандартный поток вывода все элементы коллекции в строковом представлении");
+        this.collectionManager = collectionManager;
+    }
+
+    @Override
+    public Response execute(Request request) {
+        Validator.validateIsEmpty(collectionManager.getCollection());
+        return collectionManager.getAll();
+    }
+}

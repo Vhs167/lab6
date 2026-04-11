@@ -1,0 +1,7 @@
+id,name,coordX,coordY,creationDate,realHero,hasToothpick,impactSpeed,soundtrackName,minutesOfWaiting,mood,carCool
+1,Alpha,15,30.0,2026-04-09T22:31:39.369340839,false,true,120.0,SongZ,15.0,LONGING,false
+4,Beta,15,30.0,2026-04-09T22:31:39.371979152,false,true,120.0,SongZ,15.0,LONGING,false
+5,UpdatedName,5,5.0,2026-04-09T22:31:39.372222607,false,true,60.0,UpdatedSong,10.0,GLOOM,false
+6,Anna,150,75.0,2026-04-09T22:31:39.372444700,false,false,100.0,OtherSoundtrack,45.0,CALM,false
+8,alena,180,77.0,2026-04-09T22:31:39.374244034,true,false,8877.0,fake_love,89.0,,false
+9,lena,180,77.0,2026-04-09T22:31:39.374469730,true,false,8877.0,fake_love,89.0,,false
