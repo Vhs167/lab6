@@ -26,7 +26,7 @@ public class Help extends AbstractCommand {
         StringBuilder sb = new StringBuilder();
         sb.append("Список доступных команд: \n");
 
-        for (Map.Entry<String, Command> entry : commandManager.getCommands().entrySet()) {
+        for (Map.Entry<String, Command> entry : commandManager.getCommandsList().entrySet()) {
             String name = entry.getKey();
             Command command = entry.getValue();
 

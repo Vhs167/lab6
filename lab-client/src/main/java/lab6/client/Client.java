@@ -4,20 +4,23 @@ import lab6.client.managers.IOManager;
 import lab6.client.factory.RequestBuilder;
 import lab6.client.network.UDPClient;
 
+import lab6.common.dto.CommandInfo;
 import lab6.common.dto.Response;
 import lab6.common.dto.Request;
-import lab6.common.models.HumanBeing;
 import lab6.common.utils.Validator;
 
 
 import java.io.FileNotFoundException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public final class Client {
 
     private final IOManager ioManager;
+    private Map<String, CommandInfo> commands = new HashMap<>();
 
     private Client(IOManager ioManager) {
         this.ioManager = ioManager;
@@ -36,8 +39,9 @@ public final class Client {
             return;
         }
 
+        loadCommand(udpClient);
 
-        RequestBuilder requestBuilder = new RequestBuilder(ioManager);
+        RequestBuilder requestBuilder = new RequestBuilder(ioManager, commands);
 
         while (true) {
             Request request = requestBuilder.buildRequest();
@@ -80,12 +84,38 @@ public final class Client {
                 ioManager.println(response.getMessage());
 
                 if (response.getCollection() != null) {
-                    for (HumanBeing human : response.getCollection()) {
+                    for (Object human : response.getCollection()) {
                         ioManager.println(human);
                     }
                 }
             } else {
                 ioManager.println("Нет ответа от сервера");
+            }
+        }
+    }
+
+    private void loadCommand(UDPClient udpClient){
+
+        Request request = new Request("get_commands", null, new String[0]);
+
+        Response response = udpClient.sendRequest(request);
+
+        if (response == null) {
+            ioManager.printError("Сервер не ответил на get_commands");
+            return;
+        }
+
+        commands.clear();
+
+        if (response.getCollection() == null) {
+            ioManager.printError("Сервер вернул пустой список команд");
+            return;
+        }
+
+        if(response.getCollection() != null){
+            for (Object obj : response.getCollection()){
+                CommandInfo info = (CommandInfo) obj;
+                commands.put(info.getName(), info);
             }
         }
     }

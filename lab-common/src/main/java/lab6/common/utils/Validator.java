@@ -1,5 +1,6 @@
 package lab6.common.utils;
 
+import lab6.common.commands.CommandType;
 import lab6.common.dto.Request;
 import lab6.common.exceptions.EnvironmentVariableNotSetException;
 import lab6.common.exceptions.InvalidCommandException;
@@ -33,16 +34,26 @@ public class Validator {
     }
 
     public static void validate(Request request) throws InvalidCommandException {
-        String name = request.getCommandName();
-        if (!commandArgCount.containsKey(name)) {
-            throw new InvalidCommandException("Неизвестная команда: " + name);
+
+        CommandType type = CommandType.fromName(request.getCommandName());
+
+        if (type == null){
+            throw new InvalidCommandException("Неизвестная команда: " + request.getCommandName());
         }
 
-        int expectedArgs = commandArgCount.get(name);
-        if (request.getArgs() == null || request.getArgs().length != expectedArgs) {
-            throw new InvalidCommandException("Команда " + name + " ожидает " + expectedArgs + " аргументов, получено: " + request.getArgs().length);
+        int expectedArgs = type.getArgsCount();
+
+        if (request.getArgs() == null) {
+            if (expectedArgs != 0) {
+                throw new InvalidCommandException("Команда " + type + " ожидает " + expectedArgs + " аргументов");
+            }
+            return;
         }
 
+        if(request.getArgs().length != expectedArgs){
+            throw new InvalidCommandException("Команда " + type + " ожидает " +
+                    expectedArgs + " аргументов, получено: " + request.getArgs().length);
+        }
     }
 
     public static String getCollectionFile() throws EnvironmentVariableNotSetException {

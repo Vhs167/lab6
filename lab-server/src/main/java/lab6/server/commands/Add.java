@@ -23,11 +23,6 @@ public class Add extends AbstractCommand {
     @Override
     public Response execute(Request request) {
         HumanBeing human = HumanBeingFactory.create(request.getHumanBeingRequest());
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         return collectionManager.add(human);
     }
 }

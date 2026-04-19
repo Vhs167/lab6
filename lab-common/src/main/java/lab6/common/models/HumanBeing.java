@@ -190,19 +190,21 @@ public class HumanBeing implements Comparable<HumanBeing>, Serializable {
 
     @Override
     public String toString() {
-        String info = "";
-        info += "id: " + id + " {";
-        info += "\n добавлен " + DateUtils.getDate();
-        info += "\n имя: " + name;
-        info += "\n координаты: " + coordinates;
-        info += "\n настоящий герой: " + realHero;
-        info += "\n есть зубная щетка: " + hasToothpick;
-        info += "\n сила удара: " + impactSpeed;
-        info += "\n название песни: " + soundtrackName;
-        info += "\n минуты ожидания: " + minutesOfWaiting;
-        info += "\n настроение: " + mood;
-        info += "\n машина: " + car + "\n}";
-        return info;
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("id: ").append(id).append(" {");
+        sb.append("\n добавлен ").append(DateUtils.getDate());
+        sb.append("\n имя: ").append(name);
+        sb.append("\n координаты: ").append(coordinates);
+        sb.append("\n настоящий герой: ").append(realHero);
+        sb.append("\n сила удара: ").append(impactSpeed);
+        sb.append("\n есть зубная щетка: ").append(hasToothpick);
+        sb.append("\n название песни: ").append(soundtrackName);
+        sb.append("\n минуты ожидания: ").append(minutesOfWaiting);
+        sb.append("\n настроение: ").append(mood);
+        sb.append("\n машина: ").append(car).append("\n}");
+
+        return sb.toString();
     }
 
 }

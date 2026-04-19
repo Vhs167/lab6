@@ -3,7 +3,7 @@ package lab6.common.dto;
 import java.io.Serializable;
 
 public class Request implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 3L;
 
     private final String commandName;
     private final HumanBeingRequest humanBeingRequest;
