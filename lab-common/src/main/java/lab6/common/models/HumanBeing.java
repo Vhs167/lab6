@@ -36,45 +36,19 @@ public class HumanBeing implements Comparable<HumanBeing>, Serializable {
             double minutesOfWaiting,
             Mood mood,
             Car car
-    ) throws InvalidFieldException {
-        if (id <= 0) {
-            throw new InvalidFieldException("id должен быть больше 0");
-        }
+    ) {
+        setId(id);
+        setName(name);
+        setCoordinates(coordinates);
+        setCreationDate(creationDate);
+        setRealHero(realHero);
+        setHasToothpick(hasToothpick);
+        setImpactSpeed(impactSpeed);
+        setSoundtrackName(soundtrackName);
+        setMinutesOfWaiting(minutesOfWaiting);
+        setMood(mood);
+        setCar(car);
 
-        if (name == null || name.trim().isEmpty()) {
-            throw new InvalidFieldException("name не может быть пустым");
-        }
-
-        if (coordinates == null) {
-            throw new InvalidFieldException("coordinates не может быть null");
-        }
-
-        if (creationDate == null) {
-            throw new InvalidFieldException("creationDate не может быть null");
-        }
-
-        if (realHero == null) {
-            throw new InvalidFieldException("realHero не может быть null");
-        }
-
-        if (soundtrackName == null) {
-            throw new InvalidFieldException("soundtrackName не может быть null");
-        }
-
-        if (car == null) {
-            throw new InvalidFieldException("car не может быть null");
-        }
-        this.id = id;
-        this.name = name;
-        this.coordinates = coordinates;
-        this.creationDate = creationDate;
-        this.realHero = realHero;
-        this.hasToothpick = hasToothpick;
-        this.impactSpeed = impactSpeed;
-        this.soundtrackName = soundtrackName;
-        this.minutesOfWaiting = minutesOfWaiting;
-        this.mood = mood;
-        this.car = car;
     }
 
     public HumanBeing(
@@ -87,51 +61,92 @@ public class HumanBeing implements Comparable<HumanBeing>, Serializable {
             double minutesOfWaiting,
             Mood mood,
             Car car
-    ) throws InvalidFieldException {
-
-        if (coordinates == null) {
-            throw new InvalidFieldException("coordinates не может быть null");
-        }
-
-        if (realHero == null) {
-            throw new InvalidFieldException("realHero не может быть null");
-        }
-
-        if (soundtrackName == null) {
-            throw new InvalidFieldException("soundtrackName не может быть null");
-        }
-
-        if (car == null) {
-            throw new InvalidFieldException("car не может быть null");
-        }
-
-        this.name = name;
-        this.coordinates = coordinates;
-        this.realHero = realHero;
-        this.hasToothpick = hasToothpick;
-        this.impactSpeed = impactSpeed;
-        this.soundtrackName = soundtrackName;
-        this.minutesOfWaiting = minutesOfWaiting;
-        this.mood = mood;
-        this.car = car;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public LocalDateTime getCreationDate() {
-        return creationDate;
+    ) {
+        setName(name);
+        setCoordinates(coordinates);
+        setRealHero(realHero);
+        setHasToothpick(hasToothpick);
+        setImpactSpeed(impactSpeed);
+        setSoundtrackName(soundtrackName);
+        setMinutesOfWaiting(minutesOfWaiting);
+        setMood(mood);
+        setCar(car);
     }
 
     @Override
     public int compareTo(HumanBeing other) {
         return Double.compare(this.impactSpeed, other.impactSpeed);
     }
+
+    public void setId(long id) {
+        if (id <= 0) {
+            throw new InvalidFieldException("id должен быть больше 0");
+        }
+        this.id = id;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        if (creationDate == null) {
+            throw new InvalidFieldException("creationDate не может быть null");
+        }
+        this.creationDate = creationDate;
+    }
+
+    private void setName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new InvalidFieldException("name не может быть пустым");
+        }
+        this.name = name;
+    }
+
+    private void setCoordinates(Coordinates coordinates) {
+        if (coordinates == null) {
+            throw new InvalidFieldException("coordinates не может быть null");
+        }
+        this.coordinates = coordinates;
+    }
+
+    private void setRealHero(Boolean realHero) {
+        if (realHero == null) {
+            throw new InvalidFieldException("realHero не может быть null");
+        }
+        this.realHero = realHero;
+    }
+
+    private void setHasToothpick(boolean hasToothpick) {
+        this.hasToothpick = hasToothpick;
+    }
+
+    private void setImpactSpeed(double impactSpeed) {
+        this.impactSpeed = impactSpeed;
+    }
+
+    private void setSoundtrackName(String soundtrackName) {
+        if (soundtrackName == null) {
+            throw new InvalidFieldException("soundtrackName не может быть null");
+        }
+        this.soundtrackName = soundtrackName;
+    }
+
+    private void setMinutesOfWaiting(double minutesOfWaiting) {
+        this.minutesOfWaiting = minutesOfWaiting;
+    }
+
+    private void setMood(Mood mood) {
+        this.mood = mood;
+    }
+
+    private void setCar(Car car) {
+        if (car == null) {
+            throw new InvalidFieldException("car не может быть null");
+        }
+        this.car = car;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
 
     public long getId() {
         return id;
@@ -189,4 +204,5 @@ public class HumanBeing implements Comparable<HumanBeing>, Serializable {
         info += "\n машина: " + car + "\n}";
         return info;
     }
+
 }

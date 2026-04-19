@@ -16,7 +16,7 @@ public class UDPClient {
         this.inetAddress = InetAddress.getByName(host);
         this.port = port;
         this.socket = new DatagramSocket();
-        this.socket.setSoTimeout(2000);
+        this.socket.setSoTimeout(5000);
     }
 
     public Response sendRequest(Request request) {

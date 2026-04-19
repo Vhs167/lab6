@@ -32,8 +32,10 @@ public final class Client {
             ioManager.println("Неизвестный хост: " + e.getMessage());
             return;
         } catch (SocketException e) {
-            throw new RuntimeException(e);
+            ioManager.printError("Ошибка подключения к серверу " + e.getMessage());
+            return;
         }
+
 
         RequestBuilder requestBuilder = new RequestBuilder(ioManager);
 
