@@ -1,19 +1,15 @@
 package lab6.server;
 
 
+import lab6.common.dto.Request;
+import lab6.common.dto.Response;
 import lab6.server.handlers.RequestHandler;
 import lab6.server.managers.*;
+import lab6.server.network.UDPServer;
 import lab6.server.utils.*;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.util.Iterator;
-import java.util.Set;
+
 import java.util.logging.Level;
 
 
@@ -24,62 +20,47 @@ public class Server {
     private final CommandManager commandManager;
 
 
-
     public Server(int port) {
         this.port = port;
+
         this.collectionManager = new CollectionManager();
         CsvSaver csvSaver = new CsvSaver(collectionManager.getCollection());
         this.commandManager = new CommandManager(collectionManager, csvSaver);
+
         CsvLoader csvLoader = new CsvLoader(collectionManager);
         csvLoader.loadFromFile();
     }
 
-    public void start() throws IOException {
-        try (DatagramChannel channel = DatagramChannel.open();
-            Selector selector = Selector.open()){
+    public void start() {
+        try {
+            UDPServer udpServer = new UDPServer(port, 65535);
+            RequestHandler requestHandler = new RequestHandler(commandManager);
 
-            channel.bind(new InetSocketAddress(port));
-            channel.configureBlocking(false);
+            ServerLogger.logger.log(Level.INFO, "Сервер запущен на порту" + port);
 
-            channel.register(selector, SelectionKey.OP_READ);
+            while (true) {
+                UDPServer.Packet packet = udpServer.recieve();
+                if (packet == null) continue;
 
-            ServerLogger.logger.info("Сервер запущен на порту " + port);
+                try {
+                    Request request = Serializer.deserialize(packet.data);
 
-            RequestHandler handler = new RequestHandler(channel, commandManager);
-            ByteBuffer buffer = ByteBuffer.allocate(65535);
+                    Response response = requestHandler.handle(request);
 
-            while(true) {
-                selector.select();
+                    byte[] responseBytes = Serializer.serialize(response);
 
-                Set<SelectionKey> selectedKeys = selector.selectedKeys();
-                Iterator<SelectionKey> iterator = selectedKeys.iterator();
-                while (iterator.hasNext()) {
-                    SelectionKey key = iterator.next();
-                    iterator.remove();
-                    if (key.isReadable()) {
-                        DatagramChannel dc = (DatagramChannel) key.channel();
+                    udpServer.send(responseBytes, packet.address);
 
-                        buffer.clear();
-                        SocketAddress clientAddress = dc.receive(buffer);
-
-                        if (clientAddress != null) {
-                            ServerLogger.logger.info("Получен запрос от клиента: " + clientAddress);
-                            ServerLogger.logger.info("Пакет принят");
-
-                            handler.handle(buffer, clientAddress);
-
-                            ServerLogger.logger.info("Ответ отправлен клиенту: " + clientAddress);
-
-                        }
-                    }
+                } catch (Exception e) {
+                    ServerLogger.logger.log(Level.SEVERE, "Ошибка работы сервера", e);
                 }
             }
-        } catch(IOException e){
+        } catch (IOException e) {
             ServerLogger.logger.log(Level.SEVERE, "Ошибка работы сервера, порт: " + port, e);
         }
     }
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) {
         Server server = new Server(32493);
         server.start();
     }

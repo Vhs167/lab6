@@ -8,26 +8,28 @@ import java.net.*;
 import java.util.Collections;
 
 public class UDPClient {
-    private final String host;
+    private final InetAddress inetAddress;
     private final int port;
     private final DatagramSocket socket;
 
-    public UDPClient(String host, int port) throws SocketException {
-        this.host = host;
+    public UDPClient(String host, int port) throws UnknownHostException, SocketException {
+        this.inetAddress = InetAddress.getByName(host);
         this.port = port;
         this.socket = new DatagramSocket();
-        this.socket.setSoTimeout(10000);
+        this.socket.setSoTimeout(2000);
     }
 
     public Response sendRequest(Request request) {
         try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-            oos.writeObject(request);
-            oos.flush();
-            byte[] requestBytes = baos.toByteArray();
+            byte[] requestBytes;
+            try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                 ObjectOutputStream oos = new ObjectOutputStream(baos)) {
 
-            InetAddress inetAddress = InetAddress.getByName(host);
+                oos.writeObject(request);
+                oos.flush();
+                requestBytes = baos.toByteArray();
+            }
+
             DatagramPacket packet = new DatagramPacket(requestBytes, requestBytes.length, inetAddress, port);
             socket.send(packet);
 
@@ -35,9 +37,11 @@ public class UDPClient {
             DatagramPacket responsePacket = new DatagramPacket(buffer, buffer.length);
             socket.receive(responsePacket);
 
-            ByteArrayInputStream bais = new ByteArrayInputStream(responsePacket.getData(), 0, responsePacket.getLength());
-            ObjectInputStream ois = new ObjectInputStream(bais);
-            return (Response) ois.readObject();
+            try (ByteArrayInputStream bais = new ByteArrayInputStream(responsePacket.getData(), 0, responsePacket.getLength());
+                 ObjectInputStream ois = new ObjectInputStream(bais)) {
+                return (Response) ois.readObject();
+            }
+
         } catch (SocketTimeoutException e) {
             return new Response(Collections.emptyList(), "Сервер не отвечает таймаут");
         } catch (IOException e) {
@@ -45,9 +49,5 @@ public class UDPClient {
         } catch (ClassNotFoundException e) {
             return new Response(Collections.emptyList(), "Ошибка при работе сервера");
         }
-    }
-
-    public void close() {
-        socket.close();
     }
 }

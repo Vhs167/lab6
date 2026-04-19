@@ -12,6 +12,7 @@ import lab6.common.utils.Validator;
 
 import java.io.FileNotFoundException;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 
 
 public final class Client {
@@ -24,12 +25,16 @@ public final class Client {
 
     public void start() {
         UDPClient udpClient;
+
         try {
-            udpClient = new UDPClient("localhost", 13932);
-        } catch (SocketException e) {
-            ioManager.printError("Ошибка подключения к серверу " + e.getMessage());
+            udpClient = new UDPClient("localhost", 32493);
+        } catch (UnknownHostException e) {
+            ioManager.println("Неизвестный хост: " + e.getMessage());
             return;
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
         }
+
         RequestBuilder requestBuilder = new RequestBuilder(ioManager);
 
         while (true) {
@@ -66,6 +71,7 @@ public final class Client {
 
                 continue;
             }
+
             Response response = udpClient.sendRequest(request);
 
             if (response != null) {
@@ -80,7 +86,6 @@ public final class Client {
                 ioManager.println("Нет ответа от сервера");
             }
         }
-        udpClient.close();
     }
 
 

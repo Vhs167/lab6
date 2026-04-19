@@ -6,4 +6,7 @@
 .idea
 *.jar
 script.txt
+script1.txt
+script2.txt
 test.csv
+s_checks.xml
