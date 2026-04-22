@@ -1,6 +1,7 @@
 package lab6.server.commands;
 
 
+import lab6.common.commands.CommandType;
 import lab6.common.dto.Response;
 import lab6.common.dto.Request;
 import lab6.common.utils.Validator;
@@ -16,7 +17,7 @@ public class RemoveGreater extends AbstractCommand {
     private final CollectionManager collectionManager;
 
     public RemoveGreater(CollectionManager collectionManager) {
-        super("remove_greater {element}", "удалить из коллекции все элементы, превышающие заданный");
+        super("remove_greater {element}", CommandType.ONE_ARG ,"удалить из коллекции все элементы, превышающие заданный");
         this.collectionManager = collectionManager;
     }
 

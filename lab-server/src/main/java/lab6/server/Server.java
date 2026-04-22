@@ -36,7 +36,7 @@ public class Server {
             UDPServer udpServer = new UDPServer(port, 65535);
             RequestHandler requestHandler = new RequestHandler(commandManager);
 
-            ServerLogger.logger.log(Level.INFO, "Сервер запущен на порту" + port);
+            ServerLogger.logger.log(Level.INFO, "Сервер запущен на порту: " + port);
 
             while (true) {
                 UDPServer.Packet packet = udpServer.recieve();

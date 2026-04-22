@@ -7,7 +7,6 @@ import lab6.client.network.UDPClient;
 import lab6.common.dto.CommandInfo;
 import lab6.common.dto.Response;
 import lab6.common.dto.Request;
-import lab6.common.utils.Validator;
 
 
 import java.io.FileNotFoundException;
@@ -15,6 +14,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+
 
 
 public final class Client {
@@ -50,7 +50,6 @@ public final class Client {
                 continue;
             }
 
-            Validator.validate(request);
 
             String command = request.getCommandName();
 

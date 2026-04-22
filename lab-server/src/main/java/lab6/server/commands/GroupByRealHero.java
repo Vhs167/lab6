@@ -1,5 +1,6 @@
 package lab6.server.commands;
 
+import lab6.common.commands.CommandType;
 import lab6.common.dto.Response;
 import lab6.common.dto.Request;
 import lab6.server.managers.CollectionManager;
@@ -16,7 +17,7 @@ public class GroupByRealHero extends AbstractCommand {
 
 
     public GroupByRealHero(CollectionManager collectionManager) {
-        super("group_counting_by_real_hero", "сгруппировать элементы коллекции по значению поля realHero, вывести количество элементов в каждой группе");
+        super("group_counting_by_real_hero", CommandType.NO_ARG, "сгруппировать элементы коллекции по значению поля realHero, вывести количество элементов в каждой группе");
         this.collectionManager = collectionManager;
     }
 

@@ -1,7 +1,7 @@
 package lab6.server.commands;
 
+import lab6.common.commands.CommandType;
 import lab6.common.dto.Request;
-import lab6.common.utils.DateUtils;
 import lab6.common.dto.Response;
 import lab6.server.managers.CollectionManager;
 
@@ -16,7 +16,7 @@ public class Info extends AbstractCommand {
     private final CollectionManager collectionManager;
 
     public Info(CollectionManager collectionManager) {
-        super("info", "вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и т.д.)");
+        super("info", CommandType.NO_ARG ,"вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и т.д.)");
         this.collectionManager = collectionManager;
     }
 
@@ -29,7 +29,7 @@ public class Info extends AbstractCommand {
         sb.append("\n");
 
         sb.append("Дата инициализации: ");
-        sb.append(DateUtils.getDate());
+        sb.append(collectionManager.getInitTime());
         sb.append("\n");
 
         sb.append("Количество элементов: ");

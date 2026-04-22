@@ -1,5 +1,6 @@
 package lab6.server.commands;
 
+import lab6.common.commands.CommandType;
 import lab6.common.dto.Request;
 import lab6.common.dto.Response;
 import lab6.server.factory.HumanBeingFactory;
@@ -15,7 +16,7 @@ public class Add extends AbstractCommand {
 
 
     public Add(CollectionManager collectionManager) {
-        super("add", "добавить новый элемент в коллекцию");
+        super("add", CommandType.WITH_OBJECT, "добавить новый элемент в коллекцию");
         this.collectionManager = collectionManager;
     }
 

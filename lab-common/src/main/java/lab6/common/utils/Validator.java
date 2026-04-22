@@ -1,6 +1,7 @@
 package lab6.common.utils;
 
-import lab6.common.commands.CommandType;
+
+import lab6.common.dto.HumanBeingRequest;
 import lab6.common.dto.Request;
 import lab6.common.exceptions.EnvironmentVariableNotSetException;
 import lab6.common.exceptions.InvalidCommandException;
@@ -8,40 +9,51 @@ import lab6.common.models.HumanBeing;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+
 
 public class Validator {
-    private static final Map<String, Integer> commandArgCount = new HashMap<>();
 
-    static {
-        commandArgCount.put("add", 0);
-        commandArgCount.put("add_if_min", 0);
-        commandArgCount.put("clear", 0);
-        commandArgCount.put("count_by_impact_speed", 1);
-        commandArgCount.put("execute_script", 1);
-        commandArgCount.put("exit", 0);
-        commandArgCount.put("filter_greater_than_soundtrack_name", 1);
-        commandArgCount.put("group_counting_by_real_hero", 0);
-        commandArgCount.put("help", 0);
-        commandArgCount.put("info", 0);
-        commandArgCount.put("remove_by_id", 1);
-        commandArgCount.put("remove_greater", 1);
-        commandArgCount.put("remove_lower", 1);
-        commandArgCount.put("save", 0);
-        commandArgCount.put("show", 0);
-        commandArgCount.put("update", 1);
+    public static void validate
+            (int expectedArgs,
+             boolean requiresObject,
+             Request request) throws InvalidCommandException {
+
+        String[] args = request.getArgs();
+        HumanBeingRequest human = request.getHumanBeingRequest();
+        if (args == null) {
+            if (expectedArgs != 0) {
+                throw new InvalidCommandException("Ожидалось аргументов: " + expectedArgs);
+            }
+        } else if (expectedArgs != args.length) {
+            throw new InvalidCommandException("Ожидалось аргументов: " + expectedArgs +
+                    " Получено: " + args.length);
+        }
+
+        if (requiresObject && human == null) {
+            throw new InvalidCommandException("Требуется объект");
+        }
+
+        if (!requiresObject && human != null) {
+            throw new InvalidCommandException("Объект не требуется");
+        }
     }
 
-    public static void validate(Request request) throws InvalidCommandException {
 
-        CommandType type = CommandType.fromName(request.getCommandName());
 
-        if (type == null){
+
+
+    /*public static void validate(Request request) throws InvalidCommandException {
+
+
+
+        String commandName = request.getCommandName();
+        CommandType type = request.getCommandName();
+
+        if (commandName == null){
             throw new InvalidCommandException("Неизвестная команда: " + request.getCommandName());
         }
 
-        int expectedArgs = type.getArgsCount();
+        int expectedArgs = commandName.getArgsCount();
 
         if (request.getArgs() == null) {
             if (expectedArgs != 0) {
@@ -54,7 +66,7 @@ public class Validator {
             throw new InvalidCommandException("Команда " + type + " ожидает " +
                     expectedArgs + " аргументов, получено: " + request.getArgs().length);
         }
-    }
+    }*/
 
     public static String getCollectionFile() throws EnvironmentVariableNotSetException {
         String fileName = System.getenv("COLLECTION_FILE");

@@ -1,5 +1,6 @@
 package lab6.server.commands;
 
+import lab6.common.commands.CommandType;
 import lab6.common.dto.Request;
 import lab6.common.dto.Response;
 import lab6.server.factory.HumanBeingFactory;
@@ -18,7 +19,7 @@ public class AddIfMin extends AbstractCommand {
     private final CollectionManager collectionManager;
 
     public AddIfMin(CollectionManager collectionManager) {
-        super("add_if_min {element}", "добавить новый элемент в коллекцию, если его значение меньше, чем у наименьшего элемента этой коллекции");
+        super("add_if_min {element}", CommandType.WITH_OBJECT, "добавить новый элемент в коллекцию, если его значение меньше, чем у наименьшего элемента этой коллекции");
         this.collectionManager = collectionManager;
     }
 

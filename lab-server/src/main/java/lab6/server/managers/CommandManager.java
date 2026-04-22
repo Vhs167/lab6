@@ -22,48 +22,38 @@ import java.util.stream.Collectors;
 
 public class CommandManager {
 
-    private final Map<CommandType,Command> commands = new HashMap<>();
+    private final Map<String,Command> commands = new HashMap<>();
 
 
     public CommandManager(CollectionManager collectionManager, CsvSaver csvSaver) {
 
-        commands.put(CommandType.SHOW, new Show(collectionManager));
-        commands.put(CommandType.CLEAR, new Clear(collectionManager));
-        commands.put(CommandType.REMOVE_BY_ID, new RemoveById(collectionManager));
-        commands.put(CommandType.EXIT, new Exit(csvSaver));
-        commands.put(CommandType.GROUP_BY_REAL_HERO, new GroupByRealHero(collectionManager));
-        commands.put(CommandType.COUNT_BY_IMPACT_SPEED, new CountByImpactSpeed(collectionManager));
-        commands.put(CommandType.ADD, new Add(collectionManager));
-        commands.put(CommandType.UPDATE_BY_ID, new UpdateById(collectionManager));
-        commands.put(CommandType.ADD_IF_MIN, new AddIfMin(collectionManager));
-        commands.put(CommandType.REMOVE_GREATER, new RemoveGreater(collectionManager));
-        commands.put(CommandType.REMOVE_LOWER, new RemoveLower(collectionManager));
-        commands.put(CommandType.FILTER_GREATER_THAN_SOUNDTRACK_NAME, new FilterGreaterSoundtrack(collectionManager));
-        commands.put(CommandType.INFO, new Info(collectionManager));
-        commands.put(CommandType.HELP, new Help(this));
-        commands.put(CommandType.GET_COMMANDS, new GetCommands(this));
+        commands.put("show", new Show(collectionManager));
+        commands.put("clear", new Clear(collectionManager));
+        commands.put("remove_by_id", new RemoveById(collectionManager));
+        commands.put("exit", new Exit(csvSaver));
+        commands.put("group_by_real_hero", new GroupByRealHero(collectionManager));
+        commands.put("count_by_impact_speed", new CountByImpactSpeed(collectionManager));
+        commands.put("add", new Add(collectionManager));
+        commands.put("update_by_id", new UpdateById(collectionManager));
+        commands.put("add_if_min", new AddIfMin(collectionManager));
+        commands.put("remove_greater", new RemoveGreater(collectionManager));
+        commands.put("remove_lower", new RemoveLower(collectionManager));
+        commands.put("filter_greater_then_soundtrack_name", new FilterGreaterSoundtrack(collectionManager));
+        commands.put("info", new Info(collectionManager));
+        commands.put("help", new Help(this));
+        commands.put("get_commands", new GetCommands(this));
     }
 
     public Map<String, Command> getCommandsList() {
-        return commands.entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        e -> e.getKey().getName(),
-                        Map.Entry::getValue
-                ));
-    }
-
-    public List<CommandInfo> getCommands(){
-        List<CommandInfo> list = new ArrayList<>();
-
-        for(CommandType type : CommandType.values()){
-            list.add(new CommandInfo(type));
-        }
-        return list;
+        return Collections.unmodifiableMap(commands);
     }
 
     public List<CommandInfo> getCommandsInfo(){
-        return Arrays.stream(CommandType.values()).map(CommandInfo::new).collect(Collectors.toList());
+        return commands.entrySet().stream()
+                .map(c -> new CommandInfo(
+                        c.getKey(),
+                        c.getValue().getCommandType()))
+                .collect(Collectors.toList());
     }
 
 
@@ -72,20 +62,22 @@ public class CommandManager {
      */
     public Response executeCommand(Request request) {
 
-        CommandType type = CommandType.fromName(request.getCommandName());
+        String commandName = request.getCommandName();
 
-        if (type == null) {
+        if (commandName == null) {
             return new Response(Collections.emptyList(),
                     "Неизвестная команда: " + request.getCommandName());
         }
 
-        Command command = commands.get(type);
+        Command command = commands.get(commandName);
 
         if (command == null) {
             return new Response(Collections.emptyList(), "Неизвестная команда: " + request.getCommandName());
         }
         try {
-            Validator.validate(request);
+            CommandType type = command.getCommandType();
+
+            Validator.validate(type.getArgsCount(), type.getRequiresObject(), request);
             Response response = command.execute(request);
             ServerLogger.logger.info("Команда выполнена: " + command.getName());
 

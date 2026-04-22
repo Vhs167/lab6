@@ -7,17 +7,18 @@ import lab6.common.commands.CommandType;
 public class CommandInfo implements Serializable {
     private static final long serialVersionUID = 5L;
 
-    private String name;
-    private int argCount;
-    private boolean requiresObject;
+    private final String name;
+    private final int argCount;
+    private final boolean requiresObject;
 
-    public CommandInfo(CommandType type){
-        this.name = type.getName();
+    public CommandInfo(String name, CommandType type) {
+        this.name = name;
         this.argCount = type.getArgsCount();
         this.requiresObject = type.getRequiresObject();
     }
 
-    public String getName(){
+
+    public String getName() {
         return name;
     }
 

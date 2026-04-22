@@ -67,6 +67,7 @@ public class CsvLoader {
                         System.err.println("Ошибка при чтении строки: " + line + " (" + e.getMessage() + ")");
                     }
                 }
+                collectionManager.setInitTime();
                 ServerLogger.logger.info("Коллекция успешно добавлена");
             }
         } catch (Exception e) {

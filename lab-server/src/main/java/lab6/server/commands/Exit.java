@@ -1,6 +1,7 @@
 package lab6.server.commands;
 
 
+import lab6.common.commands.CommandType;
 import lab6.common.dto.Response;
 import lab6.common.dto.Request;
 import lab6.common.utils.Validator;
@@ -20,7 +21,7 @@ public class Exit extends AbstractCommand {
 
 
     public Exit(CsvSaver csvSaver) {
-        super("exit", "завершить программу (без сохранения в файл)");
+        super("exit", CommandType.NO_ARG ,"завершить программу (без сохранения в файл)");
         this.csvSaver = csvSaver;
 
     }

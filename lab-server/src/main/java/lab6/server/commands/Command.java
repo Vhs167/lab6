@@ -1,5 +1,6 @@
 package lab6.server.commands;
 
+import lab6.common.commands.CommandType;
 import lab6.common.dto.Response;
 import lab6.common.dto.Request;
 
@@ -11,6 +12,8 @@ public interface Command {
     String getName();
 
     String getDescription();
+
+    CommandType getCommandType();
 
     Response execute(Request request);
 }

@@ -1,5 +1,6 @@
 package lab6.server.commands;
 
+import lab6.common.commands.CommandType;
 import lab6.common.dto.Response;
 import lab6.common.dto.Request;
 import lab6.server.managers.CommandManager;
@@ -17,7 +18,7 @@ public class Help extends AbstractCommand {
     private final CommandManager commandManager;
 
     public Help(CommandManager commandManager) {
-        super("help", "вывести справку по доступным командам");
+        super("help", CommandType.NO_ARG, "вывести справку по доступным командам");
         this.commandManager = commandManager;
     }
 

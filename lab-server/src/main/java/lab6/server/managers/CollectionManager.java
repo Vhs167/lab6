@@ -3,6 +3,7 @@ package lab6.server.managers;
 import lab6.common.dto.Response;
 import lab6.common.models.HumanBeing;
 
+import lab6.common.utils.DateUtils;
 import lab6.server.utils.ServerLogger;
 
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 public class CollectionManager {
 
     private LinkedHashSet<HumanBeing> collection = new LinkedHashSet<>();
+    private String initTime;
     private long nextId = 0;
 
 
@@ -173,5 +175,13 @@ public class CollectionManager {
 
     public int getSize() {
         return collection.size();
+    }
+
+    public void setInitTime(){
+        this.initTime = DateUtils.getDate();
+    }
+
+    public String getInitTime(){
+        return initTime;
     }
 }

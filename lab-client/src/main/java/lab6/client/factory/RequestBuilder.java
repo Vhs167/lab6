@@ -3,9 +3,11 @@ package lab6.client.factory;
 import lab6.common.dto.CommandInfo;
 import lab6.common.dto.HumanBeingRequest;
 import lab6.common.dto.Request;
+import lab6.common.exceptions.InvalidCommandException;
 import lab6.common.exceptions.InvalidFieldException;
 import lab6.client.managers.IOManager;
 import lab6.client.readers.HumanBeingInputReader;
+import lab6.common.utils.Validator;
 
 import java.util.Map;
 
@@ -37,17 +39,13 @@ public class RequestBuilder {
         String[] args = new String[parts.length - 1];
         System.arraycopy(parts, 1, args, 0, args.length);
 
-        if (info == null){
+        if (info == null) {
             ioManager.printError("Неизвестная команда");
             return null;
         }
 
-        if(args.length != info.getArgCount()){
-            ioManager.printError("Неверное количество аргументов! Необходимо: " + info.getArgCount());
-            return null;
-        }
-
         HumanBeingRequest humanBeingRequest = null;
+
 
         if (info.isRequiresObject()) {
             try {
@@ -60,6 +58,14 @@ public class RequestBuilder {
                 return null;
             }
         }
-        return new Request(commandName, humanBeingRequest, args);
+        Request request = new Request(commandName, humanBeingRequest, args);
+
+        try {
+            Validator.validate(info.getArgCount(), info.isRequiresObject(), request);
+        } catch (InvalidCommandException e) {
+            ioManager.printError(e.getMessage());
+            return null;
+        }
+        return request;
     }
 }

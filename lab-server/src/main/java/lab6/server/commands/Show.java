@@ -1,5 +1,6 @@
 package lab6.server.commands;
 
+import lab6.common.commands.CommandType;
 import lab6.common.dto.Response;
 import lab6.common.dto.Request;
 import lab6.common.utils.Validator;
@@ -16,7 +17,7 @@ public class Show extends AbstractCommand {
     private final CollectionManager collectionManager;
 
     public Show(CollectionManager collectionManager) {
-        super("show", "вывести в стандартный поток вывода все элементы коллекции в строковом представлении");
+        super("show", CommandType.NO_ARG,"вывести в стандартный поток вывода все элементы коллекции в строковом представлении");
         this.collectionManager = collectionManager;
     }
 
