@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 public class CollectionManager {
 
     private LinkedHashSet<HumanBeing> collection = new LinkedHashSet<>();
+    private HashSet<Long> usedIds = new HashSet<>();
     private String initTime;
     private long nextId = 0;
 
@@ -55,9 +56,6 @@ public class CollectionManager {
         return new Response(Collections.emptyList(), "Коллекция очищена");
     }
 
-    public boolean isEmpty() {
-        return collection.isEmpty();
-    }
 
     public Response updateById(long id, HumanBeing newHuman) {
         HumanBeing oldHuman = findById(id);
@@ -73,19 +71,31 @@ public class CollectionManager {
         return new Response(Collections.singletonList(newHuman), "Объект успешно обновлен");
     }
 
-    public void initializeHuman(HumanBeing human) {
-        if (human.getId() < nextId) {
+    public void addFromFile(HumanBeing human) {
+        long id = human.getId();
+
+        if (usedIds.contains(id)) {
             human.setId(nextId);
+            usedIds.add(nextId);
             nextId++;
-        } else if (human.getId() >= nextId) {
-            nextId = human.getId() + 1;
+        } else {
+            usedIds.add(id);
+
+            if (id >= nextId) {
+                nextId = id + 1;
+            }
         }
-        human.setCreationDate(LocalDateTime.now());
+
+        collection.add(human);
     }
 
     public Response add(HumanBeing human) {
-        initializeHuman(human);
+        human.setId(nextId);
+        usedIds.add(nextId);
+        nextId++;
+        human.setCreationDate(LocalDateTime.now());
         collection.add(human);
+
         ServerLogger.logger.info("В коллекцию добален объект \n" + human);
         return new Response(Collections.singletonList(human), "Объект успешно добавлен");
     }
@@ -163,7 +173,7 @@ public class CollectionManager {
 
         if (min == null || human.getImpactSpeed() < min.getImpactSpeed()) {
             add(human);
-            ServerLogger.logger.info("В коллекцию добален объект \n" + human.toString());
+            ServerLogger.logger.info("В коллекцию добален объект \n" + human);
             return new Response(Collections.singletonList(human), "Успешно добавлено");
         }
         return new Response(Collections.emptyList(), "Не добавлено");
@@ -177,11 +187,11 @@ public class CollectionManager {
         return collection.size();
     }
 
-    public void setInitTime(){
+    public void setInitTime() {
         this.initTime = DateUtils.getDate();
     }
 
-    public String getInitTime(){
+    public String getInitTime() {
         return initTime;
     }
 }

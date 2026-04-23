@@ -61,7 +61,7 @@ public class CsvLoader {
                                 car
                         );
 
-                        collectionManager.add(human);
+                        collectionManager.addFromFile(human);
                     } catch (Exception e) {
                         ServerLogger.logger.log(Level.SEVERE, "Ошибка чтения строки" + line, e);
                         System.err.println("Ошибка при чтении строки: " + line + " (" + e.getMessage() + ")");

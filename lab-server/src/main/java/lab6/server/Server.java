@@ -1,8 +1,11 @@
 package lab6.server;
 
 
+import lab6.common.dto.Chunk;
 import lab6.common.dto.Request;
 import lab6.common.dto.Response;
+import lab6.common.network.ChunkBuffer;
+import lab6.common.network.ChunkUtils;
 import lab6.server.handlers.RequestHandler;
 import lab6.server.managers.*;
 import lab6.server.network.UDPServer;
@@ -10,6 +13,8 @@ import lab6.server.utils.*;
 
 import java.io.IOException;
 
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 
@@ -35,6 +40,7 @@ public class Server {
         try {
             UDPServer udpServer = new UDPServer(port, 65535);
             RequestHandler requestHandler = new RequestHandler(commandManager);
+            ChunkBuffer buffer = new ChunkBuffer();
 
             ServerLogger.logger.log(Level.INFO, "Сервер запущен на порту: " + port);
 
@@ -43,13 +49,32 @@ public class Server {
                 if (packet == null) continue;
 
                 try {
-                    Request request = Serializer.deserialize(packet.data);
+                    Chunk chunk = lab6.common.utils.Serializer.deserialize(packet.data);
+
+                    buffer.add(chunk);
+
+                    if (!buffer.isComplete(chunk.getId())) {
+                        continue;
+                    }
+
+                    List<Chunk> chunks = buffer.take(chunk.id);
+
+                    byte[] fullData = ChunkUtils.assemble(chunks);
+
+                    Request request = lab6.common.utils.Serializer.deserialize(fullData);
 
                     Response response = requestHandler.handle(request);
 
-                    byte[] responseBytes = Serializer.serialize(response);
+                    UUID responseId = UUID.randomUUID();
 
-                    udpServer.send(responseBytes, packet.address);
+                    byte[] responseBytes = lab6.common.utils.Serializer.serialize(response);
+
+                    List<Chunk> responseChunks = ChunkUtils.split(responseBytes, responseId);
+
+                    for (Chunk c : responseChunks) {
+                        byte[] data = lab6.common.utils.Serializer.serialize(c);
+                        udpServer.send(data, packet.address);
+                    }
 
                 } catch (Exception e) {
                     ServerLogger.logger.log(Level.SEVERE, "Ошибка работы сервера", e);

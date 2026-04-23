@@ -38,36 +38,6 @@ public class Validator {
         }
     }
 
-
-
-
-
-    /*public static void validate(Request request) throws InvalidCommandException {
-
-
-
-        String commandName = request.getCommandName();
-        CommandType type = request.getCommandName();
-
-        if (commandName == null){
-            throw new InvalidCommandException("Неизвестная команда: " + request.getCommandName());
-        }
-
-        int expectedArgs = commandName.getArgsCount();
-
-        if (request.getArgs() == null) {
-            if (expectedArgs != 0) {
-                throw new InvalidCommandException("Команда " + type + " ожидает " + expectedArgs + " аргументов");
-            }
-            return;
-        }
-
-        if(request.getArgs().length != expectedArgs){
-            throw new InvalidCommandException("Команда " + type + " ожидает " +
-                    expectedArgs + " аргументов, получено: " + request.getArgs().length);
-        }
-    }*/
-
     public static String getCollectionFile() throws EnvironmentVariableNotSetException {
         String fileName = System.getenv("COLLECTION_FILE");
         if (fileName == null || fileName.isEmpty()) {

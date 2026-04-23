@@ -1,4 +1,4 @@
-package lab6.server.utils;
+package lab6.common.utils;
 
 import java.io.*;
 
@@ -13,6 +13,12 @@ public class Serializer {
 
     public static <T> T deserialize(byte[] data) throws IOException, ClassNotFoundException {
         try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data))) {
+            return (T) ois.readObject();
+        }
+    }
+
+    public static <T> T deserialize(byte[] data, int length) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data, 0, length))) {
             return (T) ois.readObject();
         }
     }

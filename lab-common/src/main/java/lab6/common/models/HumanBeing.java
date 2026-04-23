@@ -189,6 +189,20 @@ public class HumanBeing implements Comparable<HumanBeing>, Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof HumanBeing)) return false;
+        HumanBeing that = (HumanBeing) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Long.hashCode(id);
+    }
+
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
 

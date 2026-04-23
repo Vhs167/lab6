@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class CommandManager {
 
-    private final Map<String,Command> commands = new HashMap<>();
+    private final Map<String, Command> commands = new HashMap<>();
 
 
     public CommandManager(CollectionManager collectionManager, CsvSaver csvSaver) {
@@ -45,10 +45,13 @@ public class CommandManager {
     }
 
     public Map<String, Command> getCommandsList() {
-        return Collections.unmodifiableMap(commands);
+        return commands.entrySet().stream()
+                .filter(entry -> !"get_commands".equals(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        Map.Entry::getValue));
     }
 
-    public List<CommandInfo> getCommandsInfo(){
+    public List<CommandInfo> getCommandsInfo() {
         return commands.entrySet().stream()
                 .map(c -> new CommandInfo(
                         c.getKey(),
